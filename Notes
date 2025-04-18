@@ -615,6 +615,135 @@ Running on Different Versions of a Docker Image
 
 ========================================================================================
 
+========================================================================================
+
+-> The same test/build/deploy logic reused in multiple places
+-> To avoid copy-pasting huge workflow files
+-> To standardize pipelines across teams or microservices
+-> Easier maintenance of automation (edit once, affect many)
+
+GitHub Actions lets you compose workflows by calling other workflows. It’s like building a shared function or module for CI/CD.
+
+A reusable workflow is a workflow that:
+
+-> Lives in .github/workflows/workflow-name.yml
+-> Can be called by another workflow using the workflow_call trigger
+-> Accepts inputs, secrets, and even returns outputs
+
+Caching:
+CI workflows often repeat the same steps:
+-> Downloading dependencies (e.g., npm install, pip install, mvn install)
+-> Building project files
+-> Compiling assets
+
+Without caching, every run starts from scratch, which:
+
+-> Takes more time
+-> Wastes compute resources
+-> Slows down feedback loops (slower tests → slower PRs)
+
+Caching stores results from previous runs, so you can skip redundant work.
+
+1. Speed Up Workflow Execution
+2. Reduce CI/CD Costs
+	If you’re on GitHub-hosted runners, you pay by minutes used (if beyond the free quota). More build time = more cost.
+3. Enable Incremental Builds
+
 workflow_run: This event allows you to trigger one workflow after another workflow completes. It's typically used for triggering workflows that depend on the result of a previous workflow.
 
 workflow_call: This allows workflows to be reused by calling them from another workflow, making your CI/CD pipeline more modular and reducing redundancy. It allows you to pass inputs to the called workflow and get more flexibility.
+
+Scenario	
+Reuse logic across workflows - workflow_call Recommended
+Need inputs/outputs between jobs - workflow_call Recommended
+Want max flexibility & modularity - workflow_call Recommended
+
+Run workflows in sequence - workflow_run Recommended
+Don’t need to pass data - workflow_run Recommended
+
+========================================================================================
+
+https://www.youtube.com/watch?v=2lLsW9E3WcI - GitHub Actions - Self-hosted runners - Runner Groups
+
+https://accenture.percipio.com/linked-contents/fbaa3918-117e-462d-829a-b5644fc3cbd0/landing
+
+========================================================================================
+
+GitHub REST API integration is essential for streamlining software development workflows, automating processes, and enhancing collaboration. 
+
+Automation & Workflow Management: Automates tasks like CI/CD, issue creation, and pull request management to increase efficiency in DevOps environments.
+Accessing GitHub Data: Provides programmatic access to repositories, issues, releases, and more, enabling custom tools and data integration.
+Enhanced Collaboration: Automates pull requests, code reviews, and notifications to improve team collaboration.
+Integration with Other Services: Syncs data with tools like Jira, Slack, or Trello for a seamless workflow across platforms.
+Customization & Personalization: Builds custom dashboards and developer tools to tailor workflows to specific needs.
+GitHub Actions Integration: Triggers and manages workflows for tasks like deployment and testing from external applications.
+Data Analysis & Reporting: Collects and analyzes data for insights into project health and progress.
+Security & Permissions Management: Manages access controls and audits activities for compliance and security.
+Scalability & Flexibility: Scales development operations and provides flexibility for custom solutions across environments.
+Building GitHub-powered Applications: Develops custom apps and features that integrate with GitHub to enhance user experience and streamline workflows.
+
+========================================================================================
+
+curl https://api.GitHub.com
+curl https://api.github.com/users/NeeharikaRN
+curl https://api.github.com/users/NeeharikaRN/repos
+
+========================================================================================
+
+1. Structure Your Workflows Effectively
+2. Use Caching to Speed Up Workflows
+3. Use Matrix Builds to Test Multiple Configurations
+4. Secure Your Secrets
+5. Fail Fast with Required Checks
+6. Use Descriptive Job and Step Names
+7. Use Conditional Logic (if) to Control Execution
+8. Limit Workflow Triggers for Efficiency
+9. Limit Job and Step Outputs
+10. Use Artifacts for Debugging and Archiving Results
+11. Manage Dependencies and Tools Efficiently
+12. Use workflow_run for Triggering Other Workflows
+13. Set a Timeout for Jobs and Steps
+14. Avoid Large and Monolithic Workflows
+15. Document Your Workflows
+
+========================================================================================
+
+1. Use Secrets, Never Hardcoded Values
+Never commit passwords, tokens, or API keys directly in workflows.
+Limit variables to the narrowest possible scope
+
+2. Pin Action Versions Explicitly
+Avoid using unpinned versions 
+- uses: actions/setup-node
+
+This avoids breaking changes or vulnerabilities sneaking in.
+
+3. Reuse Workflows with workflow_call
+Make common tasks (like testing or deployment steps) modular
+
+4. Use Caching Wisely
+Cache dependencies to speed up workflows
+
+5. Use consistent naming
+Organized repos = happy teams
+
+6. Test Workflows in PRs or a Staging Branch
+Use a dev or feature/* branch to test before pushing workflows to main.
+
+7. Use Matrix Builds for Speed
+Run tests in parallel across OSs or versions.
+Fast feedback = better dev experience.
+
+8. Use if: to Avoid Unnecessary Steps
+Helps avoid wasted minutes = reduced billing and cleaner logs.
+
+9. Limit Workflow Permissions
+Use the permissions block to grant only what’s needed
+Set timeouts for workflows
+Consider which triggers are really needed
+Regularly Review and Test Workflows
+Monitor and Debug Workflows
+
+For reusable workflows, this is critical.
+
+========================================================================================
